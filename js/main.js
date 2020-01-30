@@ -44,6 +44,7 @@ var createAds = function (amount) {
       },
       offer: {
         title: accommodation.toUpperCase() + ' вашей мечты',
+        address: '600, 350',
         price: getRandomValue(100000),
         type: accommodation,
         rooms: getRandomValue(10),
@@ -59,7 +60,6 @@ var createAds = function (amount) {
         },
       }
     };
-    ads[i].offer.address = ads[i].offer.location.x + ', ' + ads[i].offer.location.y;
   }
   return ads;
 };
