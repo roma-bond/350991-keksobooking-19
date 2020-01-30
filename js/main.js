@@ -55,7 +55,7 @@ var createAds = function (amount) {
         photos: getSomeArrayValues(OFFER_PHOTOS),
         location: {
           x: getRandomValue(MAP_X_MAX, MAP_X_MIN),
-          y: getRandomValue(MAP_Y_MAX, MAP_X_MIN)
+          y: getRandomValue(MAP_Y_MAX, MAP_Y_MIN)
         },
       }
     };
