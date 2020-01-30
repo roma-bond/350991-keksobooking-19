@@ -38,7 +38,7 @@ var createAds = function (amount) {
 
   var ads = [];
   for (var i = 0; i < amount; i++) {
-    ads[i] = {
+    ads.push({
       author: {
         avatar: 'img/avatars/user0' + (i + 1) + '.png'
       },
@@ -59,14 +59,15 @@ var createAds = function (amount) {
           y: getRandomValue(MAP_Y_MAX, MAP_Y_MIN)
         },
       }
-    };
+    });
   }
   return ads;
 };
 
 var createPinButton = function (ad) {
   var pinButton = pinTemplate.cloneNode(true);
-  pinButton.style = 'left: ' + ad.offer.location.x + 'px; top: ' + ad.offer.location.y + 'px;';
+  pinButton.style.left = ad.offer.location.x + 'px';
+  pinButton.style.top = ad.offer.location.y + 'px';
   var imgElement = pinButton.querySelector('img');
   imgElement.src = ad.author.avatar;
   imgElement.alt = ad.offer.title;
