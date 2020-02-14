@@ -14,15 +14,22 @@ var MAP_Y_MAX = 630;
 
 var ENTER_KEY = 'Enter';
 
+var ROOMS_CAPACITY = {
+  '1': ['1'],
+  '2': ['2', '1'],
+  '3': ['3', '2', '1'],
+  '100': ['0']
+};
+
 var adsAmount = 8;
 var mapElement = document.querySelector('.map');
 var mapMainPinElement = document.querySelector('.map__pin--main');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var mapFiltersForm = document.querySelector('.map__filters');
 var adForm = document.querySelector('.ad-form');
-var addressInput = document.querySelector('#address');
-var roomsInput = document.querySelector('#room_number');
-var capacityInput = document.querySelector('#capacity');
+var fieldsets = document.querySelectorAll('fieldset');
+var addressInput = adForm.querySelector('#address');
+var roomsInput = adForm.querySelector('#room_number');
+var capacityInput = adForm.querySelector('#capacity');
 
 var getRandomValue = function (max, min) {
   var minValue = min || 0;
@@ -94,118 +101,71 @@ var renderPins = function (ads) {
   mapPins.appendChild(fragment);
 };
 
-var declineNum = function (num, nominative, genitiveSingular, genitivePlural) {
-  if (num > 10 && (Math.round((num % 100) / 10)) === 1) {
-    return genitivePlural;
-  } else {
-    switch (num % 10) {
-      case 1: return nominative;
-      case 2:
-      case 3:
-      case 4: return genitiveSingular;
-    }
-    return genitivePlural;
-  }
+var toggleFields = function (list) {
+  list.forEach(function (item) {
+    item.disabled = !item.disabled;
+  });
 };
 
-var getNotValidMessage = function (num) {
-  num++;
-  var str = '';
-  if (num === 4) {
-    str = '«не для гостей»';
-  } else if (num === 1) {
-    str = '«для ' + num + ' ' + declineNum(num, 'гостя', 'гостей', 'гостей') + '»';
-  } else {
-    for (var i = num; i > 0; i--) {
-      if (i > 1) {
-        str = str + '«для ' + i + ' ' + declineNum(i, 'гостя', 'гостей', 'гостей') + '», ';
-      } else {
-        str = str.slice(0, str.length - 2) + ' или «для ' + i + ' ' + declineNum(i, 'гостя', 'гостей', 'гостей') + '»';
-      }
-    }
-  }
-  return str;
+var disableFieldsets = function (list) {
+  list.forEach(function (item) {
+    item.disabled = true;
+  });
 };
 
-var verifySelectValues = function () {
-  if (roomsInput.selectedIndex === 3) {
-    if (capacityInput.selectedIndex < 3) {
-      capacityInput.setCustomValidity(getNotValidMessage(roomsInput.selectedIndex));
-    } else {
-      capacityInput.setCustomValidity('');
+var removePins = function () {
+  var listOfPins = document.querySelectorAll('.map__pin');
+  listOfPins.forEach(function (item) {
+    if (!item.classList.contains('map__pin--main')) {
+      item.remove();
     }
-  } else if (roomsInput.selectedIndex >= Math.abs(capacityInput.selectedIndex - 2)) {
-    capacityInput.setCustomValidity('');
-  } else {
-    capacityInput.setCustomValidity(getNotValidMessage(roomsInput.selectedIndex));
-  }
+  });
 };
 
-var togglePageState = function (activate, adFieldsets, filterFieldsets, filterSelects) {
-  if (activate) {
+var togglePageState = function (list) {
+  toggleFields(list);
+  if (mapElement.classList.contains('map--faded')) {
     mapElement.classList.remove('map--faded');
-    adFieldsets.forEach(function (fieldset) {
-      fieldset.disabled = false;
-    });
-    filterFieldsets.forEach(function (fieldset) {
-      fieldset.disabled = false;
-    });
-    filterSelects.forEach(function (select) {
-      select.disabled = false;
-    });
+    roomsInput.addEventListener('change', onRoomChange);
+    var ads = createAds(adsAmount);
+    renderPins(ads);
   } else {
-    if (!mapElement.classList.contains('map--faded')) {
-      mapElement.classList.add('map--faded');
-    }
-    adFieldsets.forEach(function (fieldset) {
-      fieldset.disabled = true;
-    });
-    filterFieldsets.forEach(function (fieldset) {
-      fieldset.disabled = true;
-    });
-    filterSelects.forEach(function (select) {
-      select.disabled = true;
-    });
-    verifySelectValues();
+    mapElement.classList.add('map--faded');
+    roomsInput.removeEventListener('change', onRoomChange);
+    removePins();
   }
 };
 
-var getAddresCoordinates = function () {
+var getAddressCoordinates = function () {
   var x = mapMainPinElement.offsetLeft + PIN_WIDTH / 2;
   var y = mapMainPinElement.offsetTop + PIN_HEIGHT;
   return x + ', ' + y;
 };
 
-togglePageState(false, adForm.querySelectorAll('fieldset'), mapFiltersForm.querySelectorAll('fieldset'), mapFiltersForm.querySelectorAll('select'));
-
 var onMainPinLeftClick = function (evt) {
   if (evt.buttons === 1) {
-    togglePageState(true, adForm.querySelectorAll('fieldset'), mapFiltersForm.querySelectorAll('fieldset'), mapFiltersForm.querySelectorAll('select'));
-    var ads = createAds(adsAmount);
-    renderPins(ads);
+    togglePageState(fieldsets);
   }
-  mapMainPinElement.removeEventListener('mousedown', onMainPinLeftClick);
 };
 
 var onMainPinHitEnter = function (evt) {
   if (evt.key === ENTER_KEY) {
-    togglePageState(true, adForm.querySelectorAll('fieldset'), mapFiltersForm.querySelectorAll('fieldset'), mapFiltersForm.querySelectorAll('select'));
-    var ads = createAds(adsAmount);
-    renderPins(ads);
+    togglePageState(fieldsets);
   }
-  mapMainPinElement.removeEventListener('keydown', onMainPinHitEnter);
+};
+
+var onRoomChange = function () {
+  if (capacityInput.options.length > 0) {
+    [].forEach.call(capacityInput.options, function (item) {
+      item.selected = (ROOMS_CAPACITY[roomsInput.value][0] === item.value) ? true : false;
+      item.hidden = (ROOMS_CAPACITY[roomsInput.value].indexOf(item.value) >= 0) ? false : true;
+    });
+  }
 };
 
 mapMainPinElement.addEventListener('mousedown', onMainPinLeftClick);
 mapMainPinElement.addEventListener('keydown', onMainPinHitEnter);
 
-roomsInput.addEventListener('change', function () {
-  verifySelectValues();
-});
-
-capacityInput.addEventListener('change', function () {
-  verifySelectValues();
-});
-
-togglePageState(false, adForm.querySelectorAll('fieldset'), mapFiltersForm.querySelectorAll('fieldset'), mapFiltersForm.querySelectorAll('select'));
-addressInput.value = getAddresCoordinates();
+disableFieldsets(fieldsets);
+addressInput.value = getAddressCoordinates();
+onRoomChange();
