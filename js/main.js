@@ -126,11 +126,13 @@ var togglePageState = function (list) {
   toggleFields(list);
   if (mapElement.classList.contains('map--faded')) {
     mapElement.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
     roomsInput.addEventListener('change', onRoomChange);
     var ads = createAds(adsAmount);
     renderPins(ads);
   } else {
     mapElement.classList.add('map--faded');
+    adForm.classList.add('ad-form--disabled');
     roomsInput.removeEventListener('change', onRoomChange);
     removePins();
   }
