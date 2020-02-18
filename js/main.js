@@ -126,6 +126,12 @@ var createPinButton = function (ad) {
   return pinButton;
 };
 
+var onPinClick = function (evt) {
+  var id = parseInt(evt.target.src.split('/user')[1].split('.png')[0], 10) - 1;
+  renderCard(ads[id]);
+  disablePinsListeners(id);
+};
+
 var enablePinsListeners = function () {
   pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
   pins.forEach(function (pin) {
@@ -187,26 +193,26 @@ var renderCard = function (ad) {
   fragment.appendChild(cardElement);
   mapElement.insertBefore(fragment, mapFilters);
 
-  var onPopupCloseClick = function () {
+  var closePopup = function () {
     document.querySelector('.map__card').remove();
     popupCloseButton.removeEventListener('click', onPopupCloseClick);
+    document.removeEventListener('keydown', onPopupEscPress);
     enablePinsListeners();
   };
 
+  var onPopupCloseClick = function () {
+    closePopup();
+  };
+
   var onPopupEscPress = function (evt) {
+    evt.preventDefault();
     if (evt.key === ESC_KEY) {
-      onPopupCloseClick();
+      closePopup();
     }
   };
 
   popupCloseButton.addEventListener('click', onPopupCloseClick);
   document.addEventListener('keydown', onPopupEscPress);
-};
-
-var onPinClick = function (evt) {
-  var id = parseInt(evt.target.src.split('/user')[1].split('.png')[0], 10) - 1;
-  renderCard(ads[id]);
-  disablePinsListeners(id);
 };
 
 var renderPins = function () {
@@ -280,8 +286,8 @@ var togglePageState = function (list) {
     adForm.classList.add('ad-form--disabled');
     roomsInput.removeEventListener('change', onRoomChange);
     typeInput.removeEventListener('change', onTypeChange);
-    timeinInput.addEventListener('change', onTimeinChange);
-    timeoutInput.addEventListener('change', onTimeoutChange);
+    timeinInput.removeEventListener('change', onTimeinChange);
+    timeoutInput.removeEventListener('change', onTimeoutChange);
     removePins();
   }
 };
