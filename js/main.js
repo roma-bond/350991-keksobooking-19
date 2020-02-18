@@ -29,7 +29,6 @@ var TYPE_MAXPRICE = {
   palace: 10000
 };
 
-var pins;
 var ads = [];
 var adsAmount = 8;
 var mapElement = document.querySelector('.map');
@@ -123,6 +122,11 @@ var createPinButton = function (ad) {
   var imgElement = pinButton.querySelector('img');
   imgElement.src = ad.author.avatar;
   imgElement.alt = ad.offer.title;
+  pinButton.addEventListener('click', function () {
+    closePopup();
+    renderCard(ad);
+    pinButton.classList.add('map__pin--active');
+  });
   return pinButton;
 };
 
@@ -146,20 +150,6 @@ var closePopup = function () {
     document.removeEventListener('keydown', onPopupEscPress);
     mapElement.querySelector('.map__pin--active').classList.remove('map__pin--active');
   }
-};
-
-var onPinClick = function (evt) {
-  closePopup();
-  var activePin = evt.target;
-  var id;
-  if (activePin.src) {
-    activePin.parentNode.classList.add('map__pin--active');
-    id = parseInt(activePin.src.split('/user')[1].split('.png')[0], 10) - 1;
-  } else {
-    activePin.classList.add('map__pin--active');
-    id = parseInt(activePin.children[0].src.split('/user')[1].split('.png')[0], 10) - 1;
-  }
-  renderCard(ads[id]);
 };
 
 var renderCard = function (ad) {
@@ -219,11 +209,6 @@ var renderPins = function () {
     fragment.appendChild(createPinButton(ads[i]));
   }
   mapPins.appendChild(fragment);
-
-  pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-  pins.forEach(function (pin) {
-    pin.addEventListener('click', onPinClick);
-  });
 };
 
 var removePins = function () {
@@ -250,8 +235,8 @@ var toggleFields = function (list) {
 var onRoomChange = function () {
   if (capacityInput.options.length > 0) {
     [].forEach.call(capacityInput.options, function (item) {
-      item.selected = (ROOMS_CAPACITY[roomsInput.value][0] === item.value) ? true : false;
-      item.hidden = (ROOMS_CAPACITY[roomsInput.value].indexOf(item.value) >= 0) ? false : true;
+      item.selected = (ROOMS_CAPACITY[roomsInput.value][0] === item.value);
+      item.hidden = !(ROOMS_CAPACITY[roomsInput.value].indexOf(item.value) >= 0);
     });
   }
 };
