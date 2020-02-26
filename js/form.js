@@ -77,7 +77,6 @@
   };
 
   disableFieldsets(fieldsets);
-  addressInput.value = window.map.getAddressCoordinates();
   onRoomChange();
 
   window.form = {

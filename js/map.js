@@ -27,19 +27,32 @@
     return x + ', ' + y;
   };
 
-  var togglePageState = function (list) {
-    window.form.toggleFields(list);
+  var updatePageElements = function () {
+    mapElement.classList.remove('map--faded');
+    window.form.enableForm();
+    window.data.ads = window.data.createAds(adsAmount);
     if (!pageActive) {
-      mapElement.classList.remove('map--faded');
-      window.form.enableForm();
-      window.data.ads = window.data.createAds(adsAmount);
       window.pin.renderPins(window.data.ads);
-      pageActive = true;
+    }
+    pageActive = true;
+    window.form.addressInput.value = getAddressCoordinates();
+  };
+
+  var disablePageElements = function () {
+    mapElement.classList.add('map--faded');
+    window.form.disableForm();
+    window.pin.removePins();
+    pageActive = false;
+    window.form.addressInput.value = '';
+  };
+
+  var togglePageState = function (pinDragged) {
+    var list = window.form.fieldsets;
+    window.form.toggleFields(list);
+    if (pageActive && !pinDragged) {
+      disablePageElements();
     } else {
-      mapElement.classList.add('map--faded');
-      window.form.disableForm();
-      window.pin.removePins();
-      pageActive = false;
+      updatePageElements();
     }
   };
 
@@ -49,16 +62,13 @@
       moveEvt.preventDefault();
       dragged = true;
 
-      window.form.addressInput.value = getAddressCoordinates();
+      if (pageActive) {
+        window.form.addressInput.value = getAddressCoordinates();
+      }
 
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
-      };
-
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
       };
 
       var left = mapMainPinElement.offsetLeft - shift.x;
@@ -73,6 +83,12 @@
         ((moveEvt.clientY > top) && (moveEvt.clientY < top + PIN_HEIGHT))) {
         mapMainPinElement.style.top = top + 'px';
       }
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
     };
 
     var onMouseUp = function (upEvt) {
@@ -81,21 +97,10 @@
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
 
-      if (dragged) {
-        var onClickPreventDefault = function (clickEvt) {
-          clickEvt.preventDefault();
-          mapMainPinElement.removeEventListener('click', onClickPreventDefault);
-        };
-        mapMainPinElement.addEventListener('click', onClickPreventDefault);
-      } else {
-        togglePageState(window.form.fieldsets);
-        window.form.addressInput.value = getAddressCoordinates();
-      }
+      togglePageState(dragged);
     };
 
-    if ((evt.buttons === 1) && !pageActive) {
-      togglePageState(window.form.fieldsets);
-    } else {
+    if (evt.buttons === 1) {
       var startCoords = {
         x: evt.clientX,
         y: evt.clientY
@@ -105,13 +110,11 @@
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
     }
-
-    window.form.addressInput.value = getAddressCoordinates();
   };
 
   var onMainPinHitEnter = function (evt) {
     if (evt.key === ENTER_KEY) {
-      togglePageState(window.form.fieldsets);
+      togglePageState(false);
     }
   };
 
@@ -123,8 +126,6 @@
     MAP_X_MAX: MAP_X_MAX,
     MAP_Y_MIN: MAP_Y_MIN,
     MAP_Y_MAX: MAP_Y_MAX,
-    mapElement: mapElement,
-
-    getAddressCoordinates: getAddressCoordinates
+    mapElement: mapElement
   };
 })();
