@@ -18,22 +18,26 @@
     return pinButton;
   };
 
-  window.pin = {
-    renderPins: function () {
-      var mapPins = document.querySelector('.map__pins');
-      var fragment = document.createDocumentFragment();
-      for (var i = 0; i < window.data.ads.length; i++) {
-        fragment.appendChild(createPinButton(window.data.ads[i]));
-      }
-      mapPins.appendChild(fragment);
-    },
-    removePins: function () {
-      var listOfPins = document.querySelectorAll('.map__pin');
-      listOfPins.forEach(function (item) {
-        if (!item.classList.contains('map__pin--main')) {
-          item.remove();
-        }
-      });
+  var renderPins = function () {
+    var mapPins = document.querySelector('.map__pins');
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < window.data.ads.length; i++) {
+      fragment.appendChild(createPinButton(window.data.ads[i]));
     }
+    mapPins.appendChild(fragment);
+  };
+
+  var removePins = function () {
+    var listOfPins = document.querySelectorAll('.map__pin');
+    listOfPins.forEach(function (item) {
+      if (!item.classList.contains('map__pin--main')) {
+        item.remove();
+      }
+    });
+  };
+
+  window.pin = {
+    renderPins: renderPins,
+    removePins: removePins
   };
 })();

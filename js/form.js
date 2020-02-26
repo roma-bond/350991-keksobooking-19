@@ -15,6 +15,7 @@
     palace: 10000
   };
 
+  var fieldsets = document.querySelectorAll('fieldset');
   var adForm = document.querySelector('.ad-form');
   var addressInput = adForm.querySelector('#address');
   var roomsInput = adForm.querySelector('#room_number');
@@ -24,27 +25,26 @@
   var timeinInput = adForm.querySelector('#timein');
   var timeoutInput = adForm.querySelector('#timeout');
 
-  window.form = {
-    fieldsets: document.querySelectorAll('fieldset'),
-    enableForm: function () {
-      adForm.classList.remove('ad-form--disabled');
-      roomsInput.addEventListener('change', onRoomChange);
-      typeInput.addEventListener('change', onTypeChange);
-      timeinInput.addEventListener('change', onTimeinChange);
-      timeoutInput.addEventListener('change', onTimeoutChange);
-    },
-    disableForm: function () {
-      adForm.classList.add('ad-form--disabled');
-      roomsInput.removeEventListener('change', onRoomChange);
-      typeInput.removeEventListener('change', onTypeChange);
-      timeinInput.removeEventListener('change', onTimeinChange);
-      timeoutInput.removeEventListener('change', onTimeoutChange);
-    },
-    toggleFields: function (list) {
-      list.forEach(function (item) {
-        item.disabled = !item.disabled;
-      });
-    }
+  var enableForm = function () {
+    adForm.classList.remove('ad-form--disabled');
+    roomsInput.addEventListener('change', onRoomChange);
+    typeInput.addEventListener('change', onTypeChange);
+    timeinInput.addEventListener('change', onTimeinChange);
+    timeoutInput.addEventListener('change', onTimeoutChange);
+  };
+
+  var disableForm = function () {
+    adForm.classList.remove('ad-form--disabled');
+    roomsInput.addEventListener('change', onRoomChange);
+    typeInput.addEventListener('change', onTypeChange);
+    timeinInput.addEventListener('change', onTimeinChange);
+    timeoutInput.addEventListener('change', onTimeoutChange);
+  };
+
+  var toggleFields = function (list) {
+    list.forEach(function (item) {
+      item.disabled = !item.disabled;
+    });
   };
 
   var disableFieldsets = function (list) {
@@ -76,7 +76,15 @@
     timeinInput.value = timeoutInput.value;
   };
 
-  disableFieldsets(window.form.fieldsets);
-  addressInput.value = window.map.getAddressCoordinates();
+  disableFieldsets(fieldsets);
   onRoomChange();
+
+  window.form = {
+    fieldsets: fieldsets,
+    addressInput: addressInput,
+
+    enableForm: enableForm,
+    disableForm: disableForm,
+    toggleFields: toggleFields
+  };
 })();
