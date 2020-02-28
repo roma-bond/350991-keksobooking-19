@@ -14,8 +14,6 @@
   var mapMainPinElement = document.querySelector('.map__pin--main');
   var pageActive = false;
 
-  var adsAmount = 8;
-
   var getAddressCoordinates = function () {
     var x = mapMainPinElement.offsetLeft + PIN_WIDTH / 2;
     var y;
@@ -27,12 +25,23 @@
     return x + ', ' + y;
   };
 
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
   var updatePageElements = function () {
     mapElement.classList.remove('map--faded');
     window.form.enableForm();
-    window.data.ads = window.data.createAds(adsAmount);
     if (!pageActive) {
-      window.pin.renderPins(window.data.ads);
+      window.backend.download(window.pin.renderPins, errorHandler);
     }
     pageActive = true;
     window.form.addressInput.value = getAddressCoordinates();
