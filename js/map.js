@@ -42,6 +42,7 @@
     window.form.enableForm();
     if (!pageActive) {
       window.backend.download(window.pin.renderPins, errorHandler);
+      window.form.adForm.addEventListener('submit', window.form.onAdFormSubmit);
     }
     pageActive = true;
     window.form.addressInput.value = getAddressCoordinates();
@@ -50,9 +51,9 @@
   var disablePageElements = function () {
     mapElement.classList.add('map--faded');
     window.form.disableForm();
+    window.form.adForm.removeEventListener('submit', window.form.onAdFormSubmit);
     window.pin.removePins();
     pageActive = false;
-    window.form.addressInput.value = '';
   };
 
   var togglePageState = function (pinDragged) {
@@ -135,6 +136,8 @@
     MAP_X_MAX: MAP_X_MAX,
     MAP_Y_MIN: MAP_Y_MIN,
     MAP_Y_MAX: MAP_Y_MAX,
-    mapElement: mapElement
+    mapElement: mapElement,
+    errorHandler: errorHandler,
+    togglePageState: togglePageState
   };
 })();
