@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var TIMEOUT_IN_MS = 1500;
+  var TIMEOUT_IN_MS = 15000;
   var StatusCode = {
     OK: 200
   };

@@ -40,9 +40,9 @@
   };
 
   var toggleDefaultInputValues = function () {
-    addressInput.value = '';
-    titleInput.value = '';
-    descriptionInput.value = '';
+    addressInput.value = window.map.getAddressCoordinates();
+    titleInput.value = titleInput.placeholder;
+    descriptionInput.value = descriptionInput.placeholder;
   };
 
   var disableForm = function () {
@@ -147,6 +147,7 @@
   adFormResetButton.addEventListener('click', toggleDefaultInputValues);
 
   disableFieldsets(fieldsets);
+  addressInput.value = window.map.getAddressCoordinates();
   onRoomChange();
 
   window.form = {
