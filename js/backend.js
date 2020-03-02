@@ -41,7 +41,7 @@
   };
 
   var upload = function (data, onLoad, onError) {
-    var URL = 'https://js.dump.academy/keksobookin';
+    var URL = 'https://js.dump.academy/keksobooking';
     serverRequest(URL, onLoad, onError, 'POST', data);
   };
 
