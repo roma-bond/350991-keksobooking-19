@@ -13,7 +13,9 @@
     xhr.open(method, url);
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.OK) {
-        onLoad(xhr.response);
+        window.form.toggleFields(window.map.filterFieldsets);
+        window.map.ads = xhr.response;
+        onLoad(window.map.applyFilters(window.map.ads));
       } else {
         onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }

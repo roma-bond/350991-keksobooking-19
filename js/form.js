@@ -16,7 +16,7 @@
     palace: 10000
   };
 
-  var fieldsets = document.querySelectorAll('fieldset');
+  var adFieldsets = document.querySelectorAll('.ad-form fieldset');
   var adForm = document.querySelector('.ad-form');
   var titleInput = adForm.querySelector('#title');
   var addressInput = adForm.querySelector('#address');
@@ -146,12 +146,13 @@
 
   adFormResetButton.addEventListener('click', toggleDefaultInputValues);
 
-  disableFieldsets(fieldsets);
+  disableFieldsets(window.map.filterFieldsets);
+  disableFieldsets(adFieldsets);
   addressInput.value = window.map.getAddressCoordinates();
   onRoomChange();
 
   window.form = {
-    fieldsets: fieldsets,
+    adFieldsets: adFieldsets,
     adForm: adForm,
     addressInput: addressInput,
 
