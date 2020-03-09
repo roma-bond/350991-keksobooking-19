@@ -16,6 +16,7 @@
   var mapMainPinElement = document.querySelector('.map__pin--main');
   var defaultMainPinTopOffset = mapMainPinElement.offsetTop;
   var defaultMainPinLeftOffset = mapMainPinElement.offsetLeft;
+  var mapFiltersForm = mapElement.querySelector('.map__filters');
   var filterFieldsets = document.querySelectorAll('.map__filters fieldset, .map__filters select');
   var housingTypeInput = mapElement.querySelector('#housing-type');
   var selectedHousingType = housingTypeInput.value;
@@ -25,7 +26,6 @@
   var selectedHousingRooms = housingRoomsInput.value;
   var housingGuestsInput = mapElement.querySelector('#housing-guests');
   var selectedHousingGuests = housingGuestsInput.value;
-  var featuresList = mapElement.querySelectorAll('#housing-features input');
   var pageActive = false;
   var ads = [];
   var checkedFeatures = [];
@@ -151,13 +151,13 @@
         match = true;
         break;
       case 'low':
-        match = (price <= PRICE_LOW) ? true : false;
+        match = (price <= PRICE_LOW);
         break;
       case 'middle':
-        match = (price <= PRICE_MIDDLE) ? true : false;
+        match = (price <= PRICE_MIDDLE);
         break;
       case 'high':
-        match = (price > PRICE_MIDDLE) ? true : false;
+        match = (price > PRICE_MIDDLE);
         break;
     }
     return match;
@@ -227,16 +227,21 @@
     window.pin.renderPins(applyFilters(window.map.ads));
   });
 
+  var onFiltersChange = function (evt) {
+    var filterType = evt.target;
+    switch (filterType) {
+      case housingTypeInput: onHousingTypeChange(evt); break;
+      case housingPriceInput: onHousingPriceChange(evt); break;
+      case housingRoomsInput: onHousingRoomsChange(evt); break;
+      case housingGuestsInput: onHousingGuestsChange(evt); break;
+      default: onHousingFeaturesChange(evt); break;
+    }
+  };
+
   mapMainPinElement.addEventListener('mousedown', onMainPinMousedown);
   mapMainPinElement.addEventListener('keydown', onMainPinHitEnter);
 
-  housingTypeInput.addEventListener('change', onHousingTypeChange);
-  housingPriceInput.addEventListener('change', onHousingPriceChange);
-  housingRoomsInput.addEventListener('change', onHousingRoomsChange);
-  housingGuestsInput.addEventListener('change', onHousingGuestsChange);
-  featuresList.forEach(function (node) {
-    node.addEventListener('change', onHousingFeaturesChange);
-  });
+  mapFiltersForm.addEventListener('change', onFiltersChange);
 
   window.map = {
     MAP_X_MIN: MAP_X_MIN,
