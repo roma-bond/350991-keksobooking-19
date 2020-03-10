@@ -188,6 +188,7 @@
 
       reader.addEventListener('load', function () {
         var imgElement = document.createElement('img');
+        imgElement.style.maxHeight = '100%';
         imgElement.src = reader.result;
         accommodationPreview.appendChild(imgElement);
       });
