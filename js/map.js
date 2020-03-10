@@ -14,11 +14,25 @@
   var mapMainPinElement = document.querySelector('.map__pin--main');
   var defaultMainPinTopOffset = mapMainPinElement.offsetTop;
   var defaultMainPinLeftOffset = mapMainPinElement.offsetLeft;
+  var mapFiltersForm = mapElement.querySelector('.map__filters');
   var filterFieldsets = document.querySelectorAll('.map__filters fieldset, .map__filters select');
-  var housingTypeInput = mapElement.querySelector('#housing-type');
-  var selectedHousingType = housingTypeInput.selectedOptions[0].value;
+  var filterElements = Array.from(filterFieldsets);
   var pageActive = false;
   var ads = [];
+  var priceMap = {
+    'low': {
+      min: 0,
+      max: 10000
+    },
+    'middle': {
+      min: 10000,
+      max: 50000
+    },
+    'high': {
+      min: 50000,
+      max: Infinity
+    }
+  };
 
   var getAddressCoordinates = function () {
     var x = mapMainPinElement.offsetLeft + PIN_WIDTH / 2;
@@ -134,24 +148,46 @@
     }
   };
 
-  var applyFilters = function (list) {
-    var filteredList = [];
-    if (list) {
-      filteredList = list.filter(function (ad) {
-        return ((selectedHousingType === 'any') || (ad.offer.type === selectedHousingType));
+  var filterRules = {
+    'housing-type': function (data, filter) {
+      return filter.value === data.offer.type;
+    },
+    'housing-price': function (data, filter) {
+      return data.offer.price >= priceMap[filter.value].min && data.offer.price < priceMap[filter.value].max;
+    },
+    'housing-rooms': function (data, filter) {
+      return filter.value === data.offer.rooms.toString();
+    },
+    'housing-guests': function (data, filter) {
+      return filter.value === data.offer.guests.toString();
+    },
+    'housing-features': function (data, filter) {
+      var checkListElements = Array.from(filter.querySelectorAll('input[type=checkbox]:checked'));
+
+      return checkListElements.every(function (it) {
+        return data.offer.features.some(function (feature) {
+          return feature === it.value;
+        });
       });
     }
-    return filteredList;
   };
 
-  var onHousingTypeChange = function (evt) {
-    selectedHousingType = evt.target.selectedOptions[0].value;
+  var applyFilters = function (list) {
+    return list.filter(function (item) {
+      return filterElements.every(function (filter) {
+        return (filter.value === 'any') ? true : filterRules[filter.id](item, filter);
+      });
+    });
+  };
+
+  var onFiltersChange = function () {
     window.pin.renderPins(applyFilters(window.map.ads));
   };
 
   mapMainPinElement.addEventListener('mousedown', onMainPinMousedown);
   mapMainPinElement.addEventListener('keydown', onMainPinHitEnter);
-  housingTypeInput.addEventListener('change', onHousingTypeChange);
+
+  mapFiltersForm.addEventListener('change', window.data.debounce(onFiltersChange));
 
   window.map = {
     MAP_X_MIN: MAP_X_MIN,
