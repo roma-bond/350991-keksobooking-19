@@ -1,7 +1,9 @@
 'use strict';
 
 (function () {
+  var DEFAULT_PREVIEW_IMG_SRC = 'img/muffin-grey.svg';
   var ESC_KEY = 'Escape';
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var ROOMS_CAPACITY = {
     '1': ['1'],
     '2': ['2', '1'],
@@ -30,6 +32,10 @@
   var adFormResetButton = adForm.querySelector('.ad-form__reset');
   var successPopupTemplate = document.querySelector('#success').content.querySelector('.success');
   var errorPopupTemplate = document.querySelector('#error').content.querySelector('.error');
+  var avatarInput = adForm.querySelector('.ad-form__field input[type=file]');
+  var avatarPreview = adForm.querySelector('.ad-form-header__preview img');
+  var accommodationPhotoInput = adForm.querySelector('.ad-form__upload input[type=file]');
+  var accommodationPreview = adForm.querySelector('.ad-form__photo');
 
   var enableForm = function () {
     adForm.classList.remove('ad-form--disabled');
@@ -37,12 +43,15 @@
     typeInput.addEventListener('change', onTypeChange);
     timeinInput.addEventListener('change', onTimeinChange);
     timeoutInput.addEventListener('change', onTimeoutChange);
+    avatarInput.addEventListener('change', onAvatarChange);
+    accommodationPhotoInput.addEventListener('change', onAccommodationPhotoChange);
   };
 
   var toggleDefaultInputValues = function () {
     addressInput.value = window.map.getAddressCoordinates();
     titleInput.value = titleInput.placeholder;
     descriptionInput.value = descriptionInput.placeholder;
+    avatarPreview.src = DEFAULT_PREVIEW_IMG_SRC;
   };
 
   var disableForm = function () {
@@ -51,6 +60,9 @@
     typeInput.removeEventListener('change', onTypeChange);
     timeinInput.removeEventListener('change', onTimeinChange);
     timeoutInput.removeEventListener('change', onTimeoutChange);
+    avatarInput.removeEventListener('change', onAvatarChange);
+    accommodationPhotoInput.removeEventListener('change', onAccommodationPhotoChange);
+    accommodationPreview.innerHTML = '';
     toggleDefaultInputValues();
   };
 
@@ -144,7 +156,51 @@
     window.backend.upload(new FormData(adForm), submitHandler, errorHandler);
   };
 
+  var onAvatarChange = function () {
+    var file = avatarInput.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        avatarPreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  var onAccommodationPhotoChange = function () {
+    var file = accommodationPhotoInput.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        var imgElement = document.createElement('img');
+        imgElement.style.maxHeight = '100%';
+        imgElement.src = reader.result;
+        accommodationPreview.appendChild(imgElement);
+      });
+
+      reader.readAsDataURL(file);
+    }
+  };
+
   adFormResetButton.addEventListener('click', toggleDefaultInputValues);
+
+  avatarInput.addEventListener('change', onAvatarChange);
+  accommodationPhotoInput.addEventListener('change', onAccommodationPhotoChange);
 
   disableFieldsets(window.map.filterFieldsets);
   disableFieldsets(adFieldsets);
