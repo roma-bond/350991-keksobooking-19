@@ -11,14 +11,6 @@
     xhr.responseType = 'json';
 
     xhr.open(method, url);
-    xhr.addEventListener('load', function () {
-      if (xhr.status === StatusCode.OK) {
-        window.map.ads = xhr.response;
-        onLoad(window.map.applyFilters(window.map.ads));
-      } else {
-        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
-      }
-    });
     xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения');
     });
@@ -30,8 +22,17 @@
     xhr.timeout = TIMEOUT_IN_MS;
 
     if (data) {
+      xhr.addEventListener('load', onLoad, onError);
       xhr.send(data);
     } else {
+      xhr.addEventListener('load', function () {
+        if (xhr.status === StatusCode.OK) {
+          window.map.advertisements = xhr.response;
+          onLoad(window.map.applyFilters(window.map.advertisements));
+        } else {
+          onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        }
+      });
       xhr.send();
     }
   };

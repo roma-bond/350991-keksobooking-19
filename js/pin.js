@@ -2,19 +2,21 @@
 
 (function () {
   var MAP_MAX_PINS = 5;
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   var createPinButton = function (ad) {
     if (ad.offer) {
       var pinButton = pinTemplate.cloneNode(true);
-      pinButton.style.left = ad.location.x + 'px';
-      pinButton.style.top = ad.location.y + 'px';
+      pinButton.style.left = (ad.location.x - (PIN_WIDTH / 2)) + 'px';
+      pinButton.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
       var imgElement = pinButton.querySelector('img');
       imgElement.src = ad.author.avatar;
       imgElement.alt = ad.offer.title;
       pinButton.addEventListener('click', function () {
-        window.card.closePopup();
-        window.card.renderCard(ad);
+        window.card.close();
+        window.card.render(ad);
         pinButton.classList.add('map__pin--active');
       });
       return pinButton;
@@ -23,9 +25,9 @@
     }
   };
 
-  var renderPins = function (ads) {
-    removePins();
-    removeCard();
+  var render = function (ads) {
+    remove();
+    window.card.close();
     var mapPins = document.querySelector('.map__pins');
     var pinsOnMap = (ads.length > MAP_MAX_PINS) ? MAP_MAX_PINS : ads.length;
     var fragment = document.createDocumentFragment();
@@ -38,7 +40,7 @@
     mapPins.appendChild(fragment);
   };
 
-  var removePins = function () {
+  var remove = function () {
     var listOfPins = document.querySelectorAll('.map__pin');
     listOfPins.forEach(function (item) {
       if (!item.classList.contains('map__pin--main')) {
@@ -47,15 +49,8 @@
     });
   };
 
-  var removeCard = function () {
-    var mapCard = document.querySelector('.map__card');
-    if (mapCard) {
-      mapCard.remove();
-    }
-  };
-
   window.pin = {
-    renderPins: renderPins,
-    removePins: removePins
+    render: render,
+    remove: remove
   };
 })();

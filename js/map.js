@@ -18,7 +18,7 @@
   var filterFieldsets = document.querySelectorAll('.map__filters fieldset, .map__filters select');
   var filterElements = Array.from(filterFieldsets);
   var pageActive = false;
-  var ads = [];
+  var advertisements = [];
   var priceMap = {
     'low': {
       min: 0,
@@ -36,12 +36,7 @@
 
   var getAddressCoordinates = function () {
     var x = mapMainPinElement.offsetLeft + PIN_WIDTH / 2;
-    var y;
-    if (pageActive) {
-      y = mapMainPinElement.offsetTop + PIN_HEIGHT;
-    } else {
-      y = defaultMainPinTopOffset + PIN_WIDTH / 2;
-    }
+    var y = (pageActive) ? (mapMainPinElement.offsetTop + PIN_HEIGHT) : (defaultMainPinTopOffset + PIN_WIDTH / 2);
     return x + ', ' + y;
   };
 
@@ -59,10 +54,10 @@
 
   var updatePageElements = function () {
     mapElement.classList.remove('map--faded');
-    window.form.enableForm();
+    window.form.enable();
     if (!pageActive) {
-      window.backend.download(window.pin.renderPins, errorHandler);
-      window.form.adForm.addEventListener('submit', window.form.onAdFormSubmit);
+      window.backend.download(window.pin.render, errorHandler);
+      window.form.adForm.addEventListener('submit', window.form.onSubmit);
       mapFiltersForm.addEventListener('change', window.data.debounce(onFiltersChange));
     }
     pageActive = true;
@@ -71,18 +66,18 @@
 
   var disablePageElements = function () {
     mapElement.classList.add('map--faded');
-    window.form.adForm.removeEventListener('submit', window.form.onAdFormSubmit);
-    window.pin.removePins();
+    window.form.adForm.removeEventListener('submit', window.form.onSubmit);
+    window.pin.remove();
     pageActive = false;
     mapMainPinElement.style.top = defaultMainPinTopOffset + 'px';
     mapMainPinElement.style.left = defaultMainPinLeftOffset + 'px';
-    window.form.disableForm();
+    window.form.disable();
     mapFiltersForm.removeEventListener('change', window.data.debounce(onFiltersChange));
   };
 
   var togglePageState = function (pinDragged) {
-    window.form.toggleFields(window.form.adFieldsets);
-    window.form.toggleFields(filterFieldsets);
+    window.form.toggle(window.form.fieldsets);
+    window.form.toggle(filterFieldsets);
     if (pageActive && !pinDragged) {
       disablePageElements();
     } else {
@@ -184,7 +179,7 @@
   };
 
   var onFiltersChange = function () {
-    window.pin.renderPins(applyFilters(window.map.ads));
+    window.pin.render(applyFilters(window.map.advertisements));
   };
 
   mapMainPinElement.addEventListener('mousedown', onMainPinMousedown);
@@ -197,7 +192,7 @@
     MAP_Y_MAX: MAP_Y_MAX,
     mapElement: mapElement,
     filterFieldsets: filterFieldsets,
-    ads: ads,
+    advertisements: advertisements,
 
     getAddressCoordinates: getAddressCoordinates,
     errorHandler: errorHandler,

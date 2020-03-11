@@ -18,7 +18,7 @@
     palace: 10000
   };
 
-  var adFieldsets = document.querySelectorAll('.ad-form fieldset');
+  var fieldsets = document.querySelectorAll('.ad-form fieldset');
   var adForm = document.querySelector('.ad-form');
   var titleInput = adForm.querySelector('#title');
   var addressInput = adForm.querySelector('#address');
@@ -37,7 +37,7 @@
   var accommodationPhotoInput = adForm.querySelector('.ad-form__upload input[type=file]');
   var accommodationPreview = adForm.querySelector('.ad-form__photo');
 
-  var enableForm = function () {
+  var enable = function () {
     adForm.classList.remove('ad-form--disabled');
     roomsInput.addEventListener('change', onRoomChange);
     typeInput.addEventListener('change', onTypeChange);
@@ -71,7 +71,7 @@
     toggleDefaultAdFormValues();
   };
 
-  var disableForm = function () {
+  var disable = function () {
     adForm.classList.add('ad-form--disabled');
     roomsInput.removeEventListener('change', onRoomChange);
     typeInput.removeEventListener('change', onTypeChange);
@@ -83,7 +83,7 @@
     toggleDefaultInputValues();
   };
 
-  var toggleFields = function (list) {
+  var toggle = function (list) {
     list.forEach(function (item) {
       item.disabled = !item.disabled;
     });
@@ -145,6 +145,7 @@
 
   var onErrorPopupClick = function () {
     document.querySelector('.error').remove();
+    document.removeEventListener('keydown', onErrorPopupHitEsc);
   };
 
   var onErrorPopupHitEsc = function (evt) {
@@ -168,7 +169,7 @@
     document.querySelector('main').appendChild(fragment);
   };
 
-  var onAdFormSubmit = function (evt) {
+  var onSubmit = function (evt) {
     evt.preventDefault();
     window.backend.upload(new FormData(adForm), submitHandler, errorHandler);
   };
@@ -220,18 +221,18 @@
   accommodationPhotoInput.addEventListener('change', onAccommodationPhotoChange);
 
   disableFieldsets(window.map.filterFieldsets);
-  disableFieldsets(adFieldsets);
+  disableFieldsets(fieldsets);
   addressInput.value = window.map.getAddressCoordinates();
   onRoomChange();
 
   window.form = {
-    adFieldsets: adFieldsets,
+    fieldsets: fieldsets,
     adForm: adForm,
     addressInput: addressInput,
 
-    enableForm: enableForm,
-    disableForm: disableForm,
-    toggleFields: toggleFields,
-    onAdFormSubmit: onAdFormSubmit
+    enable: enable,
+    disable: disable,
+    toggle: toggle,
+    onSubmit: onSubmit
   };
 })();

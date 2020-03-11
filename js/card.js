@@ -1,23 +1,25 @@
 'use strict';
 
 (function () {
+  var OFFER_PHOTOS_WIDTH = '45px';
+  var OFFER_PHOTOS_HEIGHT = '40px';
   var ESC_KEY = 'Escape';
 
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var mapFilters = document.querySelector('.map__filters-container');
 
   var onPopupCloseClick = function () {
-    window.card.closePopup();
+    window.card.close();
   };
 
   var onPopupEscPress = function (evt) {
     evt.preventDefault();
     if (evt.key === ESC_KEY) {
-      window.card.closePopup();
+      window.card.close();
     }
   };
 
-  var closePopup = function () {
+  var close = function () {
     var popup = document.querySelector('.map__card');
     if (popup) {
       var popupCloseButton = popup.querySelector('.popup__close');
@@ -36,7 +38,7 @@
     }
   };
 
-  var renderCard = function (ad) {
+  var render = function (ad) {
     var fragment = document.createDocumentFragment();
     var cardElement = cardTemplate.cloneNode(true);
     var cardTitleElement = cardElement.querySelector('.popup__title');
@@ -72,8 +74,8 @@
       var image = document.createElement('img');
       image.className = 'popup__photo';
       image.src = ad.offer.photos[j];
-      image.style.width = 45 + 'px';
-      image.style.height = 40 + 'px';
+      image.style.width = OFFER_PHOTOS_WIDTH;
+      image.style.height = OFFER_PHOTOS_HEIGHT;
       image.alt = 'Фотография жилья';
       cardPhotosElement.appendChild(image);
     }
@@ -87,7 +89,7 @@
   };
 
   window.card = {
-    closePopup: closePopup,
-    renderCard: renderCard
+    close: close,
+    render: render
   };
 })();
