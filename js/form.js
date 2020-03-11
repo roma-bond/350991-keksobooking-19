@@ -47,11 +47,28 @@
     accommodationPhotoInput.addEventListener('change', onAccommodationPhotoChange);
   };
 
-  var toggleDefaultInputValues = function () {
+  var toggleDefaultFilterValues = function () {
+    window.map.filterFieldsets.forEach(function (filterNode) {
+      if (filterNode.value) {
+        filterNode.value = 'any';
+      } else {
+        Array.from(filterNode.elements).forEach(function (input) {
+          input.checked = false;
+        });
+      }
+    });
+  };
+
+  var toggleDefaultAdFormValues = function () {
     addressInput.value = window.map.getAddressCoordinates();
     titleInput.value = titleInput.placeholder;
     descriptionInput.value = descriptionInput.placeholder;
     avatarPreview.src = DEFAULT_PREVIEW_IMG_SRC;
+  };
+
+  var toggleDefaultInputValues = function () {
+    toggleDefaultFilterValues();
+    toggleDefaultAdFormValues();
   };
 
   var disableForm = function () {

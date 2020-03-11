@@ -63,6 +63,7 @@
     if (!pageActive) {
       window.backend.download(window.pin.renderPins, errorHandler);
       window.form.adForm.addEventListener('submit', window.form.onAdFormSubmit);
+      mapFiltersForm.addEventListener('change', window.data.debounce(onFiltersChange));
     }
     pageActive = true;
     window.form.addressInput.value = getAddressCoordinates();
@@ -76,10 +77,12 @@
     mapMainPinElement.style.top = defaultMainPinTopOffset + 'px';
     mapMainPinElement.style.left = defaultMainPinLeftOffset + 'px';
     window.form.disableForm();
+    mapFiltersForm.removeEventListener('change', window.data.debounce(onFiltersChange));
   };
 
   var togglePageState = function (pinDragged) {
     window.form.toggleFields(window.form.adFieldsets);
+    window.form.toggleFields(filterFieldsets);
     if (pageActive && !pinDragged) {
       disablePageElements();
     } else {
@@ -186,8 +189,6 @@
 
   mapMainPinElement.addEventListener('mousedown', onMainPinMousedown);
   mapMainPinElement.addEventListener('keydown', onMainPinHitEnter);
-
-  mapFiltersForm.addEventListener('change', window.data.debounce(onFiltersChange));
 
   window.map = {
     MAP_X_MIN: MAP_X_MIN,

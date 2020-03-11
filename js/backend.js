@@ -13,7 +13,6 @@
     xhr.open(method, url);
     xhr.addEventListener('load', function () {
       if (xhr.status === StatusCode.OK) {
-        window.form.toggleFields(window.map.filterFieldsets);
         window.map.ads = xhr.response;
         onLoad(window.map.applyFilters(window.map.ads));
       } else {
