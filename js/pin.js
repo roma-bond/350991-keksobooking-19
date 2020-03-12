@@ -26,8 +26,8 @@
   };
 
   var render = function (ads) {
-    remove();
     window.card.close();
+    remove();
     var mapPins = document.querySelector('.map__pins');
     var pinsOnMap = (ads.length > MAP_MAX_PINS) ? MAP_MAX_PINS : ads.length;
     var fragment = document.createDocumentFragment();

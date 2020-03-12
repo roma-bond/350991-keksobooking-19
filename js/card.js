@@ -13,7 +13,6 @@
   };
 
   var onPopupEscPress = function (evt) {
-    evt.preventDefault();
     if (evt.key === ESC_KEY) {
       window.card.close();
     }
