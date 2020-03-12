@@ -59,11 +59,14 @@
     });
   };
 
-  var toggleDefaultAdFormValues = function () {
-    addressInput.value = window.map.getAddressCoordinates();
-    titleInput.value = titleInput.placeholder;
-    descriptionInput.value = descriptionInput.placeholder;
+  var toggleDefaultAdFormValues = function (evt) {
+    evt.preventDefault();
+    titleInput.value = '';
+    descriptionInput.value = '';
+    priceInput.value = '0';
     avatarPreview.src = DEFAULT_PREVIEW_IMG_SRC;
+    accommodationPreview.innerHTML = '';
+    addressInput.value = window.map.getAddressCoordinates();
   };
 
   var toggleDefaultInputValues = function () {
@@ -215,14 +218,13 @@
     }
   };
 
-  adFormResetButton.addEventListener('click', toggleDefaultInputValues);
+  adFormResetButton.addEventListener('click', toggleDefaultAdFormValues);
 
   avatarInput.addEventListener('change', onAvatarChange);
   accommodationPhotoInput.addEventListener('change', onAccommodationPhotoChange);
 
   disableFieldsets(window.map.filterFieldsets);
   disableFieldsets(fieldsets);
-  addressInput.value = window.map.getAddressCoordinates();
   onRoomChange();
 
   window.form = {

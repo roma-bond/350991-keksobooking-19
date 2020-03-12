@@ -53,9 +53,9 @@
   };
 
   var updatePageElements = function () {
-    mapElement.classList.remove('map--faded');
-    window.form.enable();
     if (!pageActive) {
+      mapElement.classList.remove('map--faded');
+      window.form.enable();
       window.backend.download(window.pin.render, errorHandler);
       window.form.adForm.addEventListener('submit', window.form.onSubmit);
       mapFiltersForm.addEventListener('change', window.data.debounce(onFiltersChange));
@@ -76,8 +76,10 @@
   };
 
   var togglePageState = function (pinDragged) {
-    window.form.toggle(window.form.fieldsets);
-    window.form.toggle(filterFieldsets);
+    if (!(pageActive && pinDragged)) {
+      window.form.toggle(window.form.fieldsets);
+      window.form.toggle(filterFieldsets);
+    }
     if (pageActive && !pinDragged) {
       disablePageElements();
     } else {
@@ -121,10 +123,8 @@
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
-
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-
       togglePageState(dragged);
     };
 
