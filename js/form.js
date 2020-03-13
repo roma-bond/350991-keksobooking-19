@@ -36,6 +36,7 @@
   var avatarPreview = adForm.querySelector('.ad-form-header__preview img');
   var accommodationPhotoInput = adForm.querySelector('.ad-form__upload input[type=file]');
   var accommodationPreview = adForm.querySelector('.ad-form__photo');
+  var featuresInputs = Array.from(adForm.querySelectorAll('.features input'));
 
   var enable = function () {
     adForm.classList.remove('ad-form--disabled');
@@ -60,13 +61,23 @@
   };
 
   var toggleDefaultAdFormValues = function (evt) {
-    evt.preventDefault();
-    titleInput.value = '';
-    descriptionInput.value = '';
-    priceInput.value = '0';
+    if (evt) {
+      evt.preventDefault();
+    }
     avatarPreview.src = DEFAULT_PREVIEW_IMG_SRC;
-    accommodationPreview.innerHTML = '';
+    titleInput.value = '';
     addressInput.value = window.map.getAddressCoordinates();
+    typeInput.value = 'bungalo';
+    priceInput.value = '0';
+    timeinInput.value = '12:00';
+    timeoutInput.value = '12:00';
+    roomsInput.value = '1';
+    capacityInput.value = '1';
+    descriptionInput.value = '';
+    accommodationPreview.innerHTML = '';
+    featuresInputs.forEach(function (el) {
+      el.checked = false;
+    });
   };
 
   var toggleDefaultInputValues = function () {
@@ -82,7 +93,6 @@
     timeoutInput.removeEventListener('change', onTimeoutChange);
     avatarInput.removeEventListener('change', onAvatarChange);
     accommodationPhotoInput.removeEventListener('change', onAccommodationPhotoChange);
-    accommodationPreview.innerHTML = '';
     toggleDefaultInputValues();
   };
 
@@ -142,8 +152,8 @@
   };
 
   var submitHandler = function () {
-    window.map.togglePageState();
     showSuccessPopup();
+    window.map.togglePageState();
   };
 
   var onErrorPopupClick = function () {
