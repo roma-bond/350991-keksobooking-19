@@ -98,26 +98,26 @@
       }
 
       var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
+        x: startCoords.x - moveEvt.pageX,
+        y: startCoords.y - moveEvt.pageY
       };
 
       var left = mapMainPinElement.offsetLeft - shift.x;
       var top = mapMainPinElement.offsetTop - shift.y;
 
       if (((left + PIN_WIDTH / 2 > MAP_X_MIN) && (left + PIN_WIDTH / 2 < MAP_X_MAX)) &&
-        ((moveEvt.clientX > left + MAP_LEFT_OFFSET) && (moveEvt.clientX < left + PIN_WIDTH + MAP_LEFT_OFFSET))) {
+        ((moveEvt.pageX > left + MAP_LEFT_OFFSET) && (moveEvt.pageX < left + PIN_WIDTH + MAP_LEFT_OFFSET))) {
         mapMainPinElement.style.left = left + 'px';
       }
 
       if (((top + PIN_HEIGHT > MAP_Y_MIN) && (top + PIN_HEIGHT < MAP_Y_MAX)) &&
-        ((moveEvt.clientY > top) && (moveEvt.clientY < top + PIN_HEIGHT))) {
+        ((moveEvt.pageY > top) && (moveEvt.pageY < top + PIN_HEIGHT))) {
         mapMainPinElement.style.top = top + 'px';
       }
 
       startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
+        x: moveEvt.pageX,
+        y: moveEvt.pageY
       };
     };
 
@@ -130,8 +130,8 @@
 
     if (evt.buttons === 1) {
       var startCoords = {
-        x: evt.clientX,
-        y: evt.clientY
+        x: evt.pageX,
+        y: evt.pageY
       };
       var dragged = false;
 

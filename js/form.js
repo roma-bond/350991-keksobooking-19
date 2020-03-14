@@ -108,6 +108,10 @@
     });
   };
 
+  var onResetButtonClick = function () {
+    window.map.togglePageState(false);
+  };
+
   var onRoomChange = function () {
     if (capacityInput.options.length > 0) {
       [].forEach.call(capacityInput.options, function (item) {
@@ -228,14 +232,14 @@
     }
   };
 
-  adFormResetButton.addEventListener('click', toggleDefaultAdFormValues);
-
-  avatarInput.addEventListener('change', onAvatarChange);
-  accommodationPhotoInput.addEventListener('change', onAccommodationPhotoChange);
-
   disableFieldsets(window.map.filterFieldsets);
   disableFieldsets(fieldsets);
   onRoomChange();
+  addressInput.value = window.map.getAddressCoordinates();
+
+  avatarInput.addEventListener('change', onAvatarChange);
+  accommodationPhotoInput.addEventListener('change', onAccommodationPhotoChange);
+  adFormResetButton.addEventListener('click', onResetButtonClick);
 
   window.form = {
     fieldsets: fieldsets,
