@@ -68,7 +68,6 @@
     titleInput.value = '';
     addressInput.value = window.map.getAddressCoordinates();
     typeInput.value = 'bungalo';
-    priceInput.value = '0';
     timeinInput.value = '12:00';
     timeoutInput.value = '12:00';
     roomsInput.value = '1';
@@ -109,7 +108,7 @@
   };
 
   var onResetButtonClick = function () {
-    window.map.togglePageState(false);
+    window.map.disablePageElements();
   };
 
   var onRoomChange = function () {
@@ -157,7 +156,7 @@
 
   var submitHandler = function () {
     showSuccessPopup();
-    window.map.togglePageState();
+    window.map.disablePageElements();
   };
 
   var onErrorPopupClick = function () {

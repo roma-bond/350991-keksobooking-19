@@ -25,7 +25,7 @@
       popup.remove();
       popupCloseButton.removeEventListener('click', onPopupCloseClick);
       document.removeEventListener('keydown', onPopupEscPress);
-      window.map.mapElement.querySelector('.map__pin--active').classList.remove('map__pin--active');
+      window.map.element.querySelector('.map__pin--active').classList.remove('map__pin--active');
     }
   };
 
@@ -81,7 +81,7 @@
 
     cardAvatarElement.src = ad.author.avatar;
     fragment.appendChild(cardElement);
-    window.map.mapElement.insertBefore(fragment, mapFilters);
+    window.map.element.insertBefore(fragment, mapFilters);
 
     popupCloseButton.addEventListener('click', onPopupCloseClick);
     document.addEventListener('keydown', onPopupEscPress);

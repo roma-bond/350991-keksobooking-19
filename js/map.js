@@ -81,9 +81,7 @@
       window.form.toggle(window.form.fieldsets);
       window.form.toggle(filterFieldsets);
     }
-    if (pageActive && !pinDragged) {
-      disablePageElements();
-    } else {
+    if (!(pageActive && !pinDragged)) {
       updatePageElements();
     }
   };
@@ -187,17 +185,18 @@
   mapMainPinElement.addEventListener('keydown', onMainPinHitEnter);
 
   window.map = {
-    MAP_X_MIN: MAP_X_MIN,
-    MAP_X_MAX: MAP_X_MAX,
-    MAP_Y_MIN: MAP_Y_MIN,
-    MAP_Y_MAX: MAP_Y_MAX,
-    mapElement: mapElement,
+    X_MIN: MAP_X_MIN,
+    X_MAX: MAP_X_MAX,
+    Y_MIN: MAP_Y_MIN,
+    Y_MAX: MAP_Y_MAX,
+    element: mapElement,
     filterFieldsets: filterFieldsets,
     advertisements: advertisements,
 
     getAddressCoordinates: getAddressCoordinates,
     errorHandler: errorHandler,
     togglePageState: togglePageState,
+    disablePageElements: disablePageElements,
     applyFilters: applyFilters
   };
 })();
