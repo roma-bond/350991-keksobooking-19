@@ -66,6 +66,7 @@
 
   var disablePageElements = function () {
     mapElement.classList.add('map--faded');
+    window.card.close();
     window.form.adForm.removeEventListener('submit', window.form.onSubmit);
     window.pin.remove();
     pageActive = false;
