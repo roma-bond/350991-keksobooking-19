@@ -56,6 +56,8 @@
     if (!pageActive) {
       mapElement.classList.remove('map--faded');
       window.form.enable();
+      window.form.toggle(window.form.fieldsets);
+      window.form.toggle(filterFieldsets);
       window.backend.download(window.pin.render, errorHandler);
       window.form.adForm.addEventListener('submit', window.form.onSubmit);
       mapFiltersForm.addEventListener('change', window.data.debounce(onFiltersChange));
@@ -72,15 +74,13 @@
     pageActive = false;
     mapMainPinElement.style.top = defaultMainPinTopOffset + 'px';
     mapMainPinElement.style.left = defaultMainPinLeftOffset + 'px';
+    window.form.toggle(window.form.fieldsets);
+    window.form.toggle(filterFieldsets);
     window.form.disable();
     mapFiltersForm.removeEventListener('change', window.data.debounce(onFiltersChange));
   };
 
   var togglePageState = function (pinDragged) {
-    if (!(pageActive && pinDragged)) {
-      window.form.toggle(window.form.fieldsets);
-      window.form.toggle(filterFieldsets);
-    }
     if (!(pageActive && !pinDragged)) {
       updatePageElements();
     }

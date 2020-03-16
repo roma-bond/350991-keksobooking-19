@@ -60,24 +60,24 @@
     fillInElementData(cardTimeElement, 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout);
 
     cardFeaturesList.innerHTML = '';
-    for (var i = 0; i < ad.offer.features.length; i++) {
+    ad.offer.features.forEach(function (feature) {
       var listElement = document.createElement('li');
-      listElement.className = 'popup__feature popup__feature--' + ad.offer.features[i];
+      listElement.className = 'popup__feature popup__feature--' + feature;
       cardFeaturesList.appendChild(listElement);
-    }
+    });
 
     cardDescriptionElement.textContent = ad.offer.description;
 
     cardPhotosElement.innerHTML = '';
-    for (var j = 0; j < ad.offer.photos.length; j++) {
+    ad.offer.photos.forEach(function (photo) {
       var image = document.createElement('img');
       image.className = 'popup__photo';
-      image.src = ad.offer.photos[j];
+      image.src = photo;
       image.style.width = OFFER_PHOTOS_WIDTH;
       image.style.height = OFFER_PHOTOS_HEIGHT;
       image.alt = 'Фотография жилья';
       cardPhotosElement.appendChild(image);
-    }
+    });
 
     cardAvatarElement.src = ad.author.avatar;
     fragment.appendChild(cardElement);
